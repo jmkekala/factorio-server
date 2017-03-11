@@ -1,0 +1,54 @@
+---
+# tasks file for factorio-server
+- name: Make sure Factorio Server root path exists and create archive folder there
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - "{{ factorio.root_path }}/archive"
+    - "{{ factorio.root_path }}/servers"
+
+- name: Create Factorio Server group - "{{ factorio.user.group }}"
+  group:
+    name: "{{ factorio.user.group }}"
+    state: present
+
+- name: Create Factorio Server user - "{{ factorio.user.name }}"
+  user:
+    name: "{{ factorio.user.name }}"
+    group: "{{ factorio.user.group }}"
+    home: "{{ factorio.root_path }}/servers/{{ factorio.user.name }}"
+    state: present
+    
+- name: Install requirements - "{{ factorio.dependencies }}"
+  package:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - "{{ factorio.dependencies }}"
+
+- name: Download Factorio Server version - "{{factorio.package.version}}"
+  get_url:
+    url: "{{ factorio.package.url }}"
+    dest: "{{ factorio.root_path }}/archive/{{ factorio.package.name }}"
+
+- name: Create needed directories for the Factorio Server version - "{{factorio.package.version}}"
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}"
+    - "{{ factorio.root_path }}/servers/{{ factorio.user.name }}/mods"
+    - "{{ factorio.root_path }}/servers/{{ factorio.user.name }}/saves"
+  become: yes
+  become_user: "{{ factorio.user.name }}"
+
+- name: Unarchive Server Package version - "{{factorio.package.version}}"
+  unarchive:
+    src: "{{ factorio.root_path }}/archive/{{ factorio.package.name }}"
+    dest: "{{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}"
+    extra_opts: ['--strip-components=1']
+    copy: no
+  become: yes
+  become_user: "{{ factorio.user.name }}"

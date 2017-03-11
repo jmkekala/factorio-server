@@ -1,0 +1,15 @@
+---
+# vars file for factorio-server
+factorio:
+  root_path: /opt
+  dependencies:
+    - wget
+
+  user:
+    name: factorio
+    group: factorio
+  package:
+    version: 0.14.22
+    url: https://www.factorio.com/get-download/0.14.22/headless/linux64
+    name: factorio_headless_x64_0.14.22.tar.gz
+  

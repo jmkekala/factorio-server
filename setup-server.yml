@@ -1,7 +1,0 @@
----
-- hosts: factorio
-  strategy: debug
-  remote_user: root
-  tasks:
-  - name: name upgrade all packages
-    yum: name=* state=latest

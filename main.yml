@@ -1,0 +1,5 @@
+---
+- hosts: factorio
+  user: root
+  roles:
+    - factorio-server
