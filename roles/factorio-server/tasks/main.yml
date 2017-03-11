@@ -1,6 +1,6 @@
 ---
 # tasks file for factorio-server
-- name: Make sure Factorio Server root path exists and create archive folder there
+- name: Make sure Factorio Server paths exists
   file:
     path: "{{ item }}"
     state: directory
@@ -9,46 +9,62 @@
     - "{{ factorio.root_path }}/archive"
     - "{{ factorio.root_path }}/servers"
 
-- name: Create Factorio Server group - "{{ factorio.user.group }}"
+- name: Create Factorio Server group
   group:
-    name: "{{ factorio.user.group }}"
+    name: "{{ item.value.group }}"
     state: present
+  with_dict: "{{ factorio.users }}"
 
-- name: Create Factorio Server user - "{{ factorio.user.name }}"
+- name: Populate Skeleton folder for users
+  file:
+    path: /etc/skel/{{ item }}
+    state: directory
+  with_items:
+    - mods
+    - saves
+
+- name: Create Factorio Server users
   user:
-    name: "{{ factorio.user.name }}"
-    group: "{{ factorio.user.group }}"
-    home: "{{ factorio.root_path }}/servers/{{ factorio.user.name }}"
+    name: "{{ item.key }}"
+    group: "{{ item.value.group }}"
+    home: "{{ factorio.root_path }}/servers/{{ item.key }}"
     state: present
-    
-- name: Install requirements - "{{ factorio.dependencies }}"
+  with_dict: "{{ factorio.users }}"
+
+- name: Setup Factorio Server folder permissions
+  file:
+    path: "{{ factorio.root_path }}/servers/{{ item.key }}"
+    mode: "0750"
+  with_dict: "{{ factorio.users }}"
+
+- name: Install requirements
   package:
     name: "{{item}}"
     state: present
   with_items:
     - "{{ factorio.dependencies }}"
 
-- name: Download Factorio Server version - "{{factorio.package.version}}"
+- name: Download Factorio Server packages
   get_url:
-    url: "{{ factorio.package.url }}"
-    dest: "{{ factorio.root_path }}/archive/{{ factorio.package.name }}"
+    url:  "{{ item.value.url }}"
+    dest: "{{ factorio.root_path }}/archive/{{ item.value.name }}"
+  with_dict: "{{ factorio.packages }}"
 
-- name: Create needed directories for the Factorio Server version - "{{factorio.package.version}}"
+- name: Create target directory for Server package
   file:
-    path: "{{ item }}"
+    path: "{{ factorio.root_path }}/servers/{{ item.key }}/{{ item.value.version }}"
     state: directory
-  with_items:
-    - "{{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}"
-    - "{{ factorio.root_path }}/servers/{{ factorio.user.name }}/mods"
-    - "{{ factorio.root_path }}/servers/{{ factorio.user.name }}/saves"
-  become: yes
-  become_user: "{{ factorio.user.name }}"
+    owner: "{{ item.key }}"
+    group: "{{ item.value.group }}"
+  with_dict: "{{ factorio.users }}"
 
-- name: Unarchive Server Package version - "{{factorio.package.version}}"
+- name: Unarchive Desired Server Packages
   unarchive:
-    src: "{{ factorio.root_path }}/archive/{{ factorio.package.name }}"
-    dest: "{{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}"
+    src: "{{ factorio.root_path }}/archive/factorio_headless_x64_{{ item.value.version }}.tar.gz"
+    dest: "{{ factorio.root_path }}/servers/{{ item.key }}/{{ item.value.version }}"
     extra_opts: ['--strip-components=1']
     copy: no
-  become: yes
-  become_user: "{{ factorio.user.name }}"
+    owner: "{{ item.key }}"
+    group: "{{ item.value.group }}"
+  with_dict: "{{ factorio.users }}"
+  

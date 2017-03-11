@@ -5,11 +5,17 @@ factorio:
   dependencies:
     - wget
 
-  user:
-    name: factorio
-    group: factorio
-  package:
-    version: 0.14.22
-    url: https://www.factorio.com/get-download/0.14.22/headless/linux64
-    name: factorio_headless_x64_0.14.22.tar.gz
-  
+  users:
+    factorio:
+      group: factorio
+      version: 0.14.22
+      port: 34197
+    another:
+      group: factorio
+      version: 0.14.22
+      port: 34198
+
+  packages:
+    0.14.22:
+      url: https://www.factorio.com/get-download/0.14.22/headless/linux64
+      name: factorio_headless_x64_0.14.22.tar.gz
