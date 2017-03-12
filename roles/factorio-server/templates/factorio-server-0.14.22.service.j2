@@ -1,0 +1,23 @@
+[Unit]
+Description=Factorio Server
+After=network.target
+RequiresMountsFor={{ factorio.root_path }}
+
+[Service]
+User={{ factorio.user.name }}
+Group={{ factorio.user.group }}
+
+# We will store a pid file in your ${WRITE_DIR}/server.pid
+# Adjust if you change the write dir of your server
+PIDFile={{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/server.pid
+
+Type=simple
+TimeoutStartSec=60
+ExecStart={{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/bin/x64/factorio --config {{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/data/server-settings.example.json --start-server /opt/servers/factorio/saves/test.zip
+TimeoutStopSec=60
+KillSignal=2
+RestartSec=20
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
