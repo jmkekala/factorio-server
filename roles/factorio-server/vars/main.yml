@@ -26,11 +26,11 @@ factorio:
       public: false
       lan:  true
     _comment_credentials: Your factorio.com login credentials. Required for games with visibility public
-    username:
-    password:
+    username: ""
+    password: ""
     _comment_token: Authentication token. May be used instead of 'password' above.
-    token:
-    game_password:
+    token: ""
+    game_password: ""
     _comment_require_user_verification: When set to true, the server will only allow clients that have a valid Factoio.com account
     require_user_verification: true
     _comment_max_upload_in_kilobytes_per_second : optional, default value is 0. 0 means unlimited.

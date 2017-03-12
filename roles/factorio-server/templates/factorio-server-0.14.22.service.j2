@@ -13,7 +13,7 @@ PIDFile={{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.pa
 
 Type=simple
 TimeoutStartSec=60
-ExecStart={{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/bin/x64/factorio --config {{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/data/server-settings.example.json --start-server /opt/servers/factorio/saves/test.zip
+ExecStart={{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/bin/x64/factorio --server-settings {{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/data/server-settings.json --start-server /opt/servers/factorio/saves/test.zip
 TimeoutStopSec=60
 KillSignal=2
 RestartSec=20
