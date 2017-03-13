@@ -1,0 +1,4 @@
+- Too complicated installation:
+    - In future install straight to root_path, without servers, usernames and suchs. 
+    - Mods and saves outside of the server installation folder
+    - Systemd still has user.name seperation but remove the version from there

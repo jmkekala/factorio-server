@@ -33,6 +33,7 @@
   file:
     path: "{{ factorio.root_path }}/servers/{{ factorio.user.name }}"
     mode: "0750"
+    recurse: yes
 
 - name: Install requirements
   package:
@@ -76,7 +77,18 @@
   become_user: "{{ factorio.user.name }}"
   become: true
 
+- name: Set server parameters for first start
+  set_fact:
+    factorio_server_parameters: "--server-settings {{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/data/server-settings.json --start-server"
+  when: factorio.new_map
+
+- name: Set server parameters for later starts
+  set_fact:
+    factorio_server_parameters: "--server-settings {{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/data/server-settings.json --start-server /opt/servers/factorio/saves/test.zip"
+  when: not factorio.new_map
+
 - name: Upload systemd service
   template:
     src: factorio-server-{{ factorio.package.version }}.service.j2
     dest: "/etc/systemd/system/factorio-server-{{ factorio.user.name }}-{{ factorio.package.version }}.service"
+    mode: 0644

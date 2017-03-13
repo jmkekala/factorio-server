@@ -1,6 +1,7 @@
 ---
 # vars file for factorio-server
 factorio:
+  new_map: True
   root_path: /opt
   port: 34197
   dependencies:
