@@ -1,20 +1,26 @@
 ---
 # vars file for factorio-server
 factorio:
-  new_map: True
-  root_path: /opt
-  port: 34197
-  dependencies:
-    - wget
+  new_map: "{{ app_new_map }}"
+  download_server: "{{ app_download_server }}"
+  reinstall_server: "{{ app_reinstall }}"
+
+  save_name: new_game.zip
+  root_path: "{{ app_path }}"
+  user_paths:
+    mods_path: mods
+    saves_path: saves
+    downloads_path: downloads
+  port: "{{ app_port }}"
 
   package:
-    version: 0.14.22
+    version: "{{ app_version }}"
     url: https://www.factorio.com/get-download/0.14.22/headless/linux64
     name: factorio_headless_x64_0.14.22.tar.gz
 
   user:
-    name: factorio
-    group: factorio
+    name: "{{ app_user }}"
+    group: "{{ app_group }}"
 
   server_settings:
     name: Name of the game as it will appear in the game listing
@@ -43,7 +49,7 @@ factorio:
     _comment_allow_commands: possible values are, true, false and admins-only
     allow_commands: admins-only
     _comment_autosave_interval": Autosave interval in minutes
-    autosave_interval: 10    
+    autosave_interval: 10
     _comment_autosave_slots: server autosave slots, it is cycled through when the server autosaves.
     autosave_slots: 5
     _comment_afk_autokick_interval": How many minutes until someone is kicked when doing nothing, 0 for never.

@@ -2,4 +2,6 @@
 - hosts: factorio
   user: root
   roles:
-    - factorio-server
+    - { role: factorio-server, app_user: factorio }
+
+# {{ ansible_eth0.ipv4.address }}

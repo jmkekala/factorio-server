@@ -1,2 +1,10 @@
 ---
 # defaults file for factorio-server
+ app_user: factorio
+ app_group: factorio
+ app_port: 34197
+ app_path: /opt/factorio
+ app_version: 0.14.22
+ app_new_map: False
+ app_reinstall: False
+ app_download_server: True

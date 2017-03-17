@@ -1,5 +1,5 @@
 [Unit]
-Description=Factorio Server
+Description=Factorio Server for {{ factorio.user.name }} User
 After=network.target
 RequiresMountsFor={{ factorio.root_path }}
 
@@ -9,11 +9,11 @@ Group={{ factorio.user.group }}
 
 # We will store a pid file in your ${WRITE_DIR}/server.pid
 # Adjust if you change the write dir of your server
-PIDFile={{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/server.pid
+PIDFile={{ factorio.root_path }}/{{ factorio.package.version }}/server.pid
 
 Type=simple
 TimeoutStartSec=60
-ExecStart={{ factorio.root_path }}/servers/{{ factorio.user.name }}/{{ factorio.package.version }}/bin/x64/factorio {{ factorio_server_parameters }}
+ExecStart={{ factorio.root_path }}/{{ factorio.package.version }}/bin/x64/factorio {{ factorio_server_parameters }}
 TimeoutStopSec=60
 KillSignal=2
 RestartSec=20
