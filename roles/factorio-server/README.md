@@ -1,38 +1,84 @@
-Role Name
-=========
+Factorio Server
+===============
 
-A brief description of the role goes here.
+Installs latest factorio server. Also creates new map, opens firewalld port and enables systemd service for the boot.
+
+Server has following disk layout by default:
+
+/opt
+  factorio
+    version_installed
+    mods
+    saves
+
+Saves are symlinked to version_installed/saves
+  
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Tested on CentOS 7.3 with systemd and firewalld. Should work also with latest Fedora/RHEL relases with no problems.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+**defaults/main.yml variables:**
 
-Dependencies
-------------
+Factorio server user
+app_user: factorio
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Group for the server. By default sames as user
+app_group: "{{ app_user }}"
+
+Server port
+app_port: 34197
+
+Location for the server
+app_path: "/opt/{{ app_user }}"
+
+Version for the server
+app_version: 0.14.22
+
+Do we wish to generate new map (and reboot to it)
+app_new_map: False
+
+Do we wish to reinstall the server
+app_reinstall: False
+
+Do we wish to redownload the tar.gz
+app_download_server: False
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+**Initial setup:**
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+- hosts: factorio
+  user: root
+  roles:
+    - factorio-server
+
+**Initial setup with 3 servers:**
+
+- hosts: factorio
+  user: root
+  roles:
+    - { role: factorio-server, app_user: factorio, app_port: 34197 }
+    - { role: factorio-server, app_user: cractorio, app_port: 34198 }
+    - { role: factorio-server, app_user: crazytorio, app_port: 34199 }
+
+**Generate new map:**
+
+- hosts: factorio
+  user: root
+  roles:
+    - { role: factorio-server, app_new_map: True }
 
 License
 -------
 
-BSD
+GPLv2
 
 Author Information
 ------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+juha.kekalainen@gmail.com
