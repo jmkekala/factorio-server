@@ -2,6 +2,8 @@
 - hosts: factorio
   user: root
   roles:
-    - { role: factorio-server, app_user: factorio }
+    - { role: factorio-server, app_user: factorio, app_port: 34197 }
+    - { role: factorio-server, app_user: cractorio, app_port: 34198 }
+    - { role: factorio-server, app_user: crazytorio, app_port: 34199 }
 
 # {{ ansible_eth0.ipv4.address }}

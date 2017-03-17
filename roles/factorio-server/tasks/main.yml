@@ -5,11 +5,16 @@
     path: "/etc/systemd/system/factorio-server-{{ factorio.user.name }}.service"
   register: running
 
+- name: Check for existing installation
+  stat:
+    path: "{{ factorio.root_path }}/{{ factorio.package.version }}"
+  register: server
+
 - name: Stop previous server
   systemd:
     name: "factorio-server-{{ factorio.user.name }}.service"
     state: stopped
-  when: running.stat.exists
+  when: running.stat.exists and (factorio.reinstall_server or factorio.download_server or factorio.new_map)
 
 - name: Create Factorio server group
   group:
@@ -53,12 +58,7 @@
     dest: "{{ factorio.root_path }}/{{factorio.user_paths.downloads_path}}/{{ factorio.package.name }}"
   become_user: "{{ factorio.user.name }}"
   become: true
-  when: factorio.download_server
-
-- name: Check for existing installation
-  stat:
-    path: "{{ factorio.root_path }}/{{ factorio.package.version }}"
-  register: server
+  when: factorio.download_server or not server.stat.exists
 
 - name: Unarchive server package
   unarchive:
@@ -68,7 +68,7 @@
     copy: no
   become_user: "{{ factorio.user.name }}"
   become: true
-  when: factorio.reinstall_server or not server.stat.exists
+  when: (factorio.reinstall_server or not server.stat.exists) or factorio.download_server
 
 - name: Upload server-settings
   template:
@@ -88,14 +88,14 @@
   command: "{{ factorio.root_path }}/{{ factorio.package.version }}/bin/x64/factorio --map-gen-settings {{ factorio.root_path }}/{{ factorio.package.version }}/data/map-gen-settings.json --create {{ factorio.root_path }}/saves/{{factorio.save_name}}"
   become_user: "{{ factorio.user.name }}"
   become: true
-  when: factorio.new_map
+  when: factorio.new_map or not server.stat.exists
 
 - name: Set server parameters for first start
   set_fact:
     factorio_server_parameters: "--server-settings {{ factorio.root_path }}/{{ factorio.package.version }}/data/server-settings.json --start-server {{ factorio.root_path }}/saves/{{factorio.save_name}} --port {{factorio.port}} --mod-directory {{ factorio.root_path }}/mods"
   when: factorio.new_map
 
-- name: Upload systemd service
+- name: Upload temporary systemd service
   template:
     src: factorio-server-{{ factorio.package.version }}.service.j2
     dest: "/etc/systemd/system/factorio-server-{{ factorio.user.name }}.service"
@@ -120,7 +120,7 @@
   set_fact:
     factorio_server_parameters: "--server-settings {{ factorio.root_path }}/{{ factorio.package.version }}/data/server-settings.json --start-server-load-latest --port {{factorio.port}} --mod-directory {{ factorio.root_path }}/mods"
 
-- name: Upload new systemd service
+- name: Upload final systemd service
   template:
     src: factorio-server-{{ factorio.package.version }}.service.j2
     dest: "/etc/systemd/system/factorio-server-{{ factorio.user.name }}.service"
@@ -130,4 +130,5 @@
   systemd:
     name: "factorio-server-{{ factorio.user.name }}.service"
     state: started
+    enabled: yes
     daemon_reload: yes
