@@ -1,0 +1,8 @@
+- name: Install basic tools
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - vim
+    - htop
+    - net-tools

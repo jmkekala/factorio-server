@@ -1,1 +1,1 @@
-Complications fixed. Next phase is testing on live server.
+ server-settings away from vars/main.yml. One settings template per user and one default one for example.

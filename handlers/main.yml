@@ -1,0 +1,11 @@
+- name: Restart sshd
+  systemd:
+    name: sshd
+    state: reloaded
+    enabled: yes
+
+- name: Restart fail2ban
+  systemd:
+    name: fail2ban
+    state: reloaded
+    enabled: yes

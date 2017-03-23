@@ -1,9 +1,14 @@
 ---
 - hosts: factorio
   user: root
-  roles:
-    - { role: factorio-server, app_user: factorio, app_port: 34197 }
-    - { role: factorio-server, app_user: cractorio, app_port: 34198 }
-    - { role: factorio-server, app_user: crazytorio, app_port: 34199 }
-
+  handlers:
+    - include: handlers/main.yml
+  tasks:
+    - include: tasks/configs.yml
+    - include: tasks/network.yml
+    - include: tasks/security.yml
+    - include: tasks/application.yml
+  roles: 
+    - { role: factorio-server}
+    
 # {{ ansible_eth0.ipv4.address }}

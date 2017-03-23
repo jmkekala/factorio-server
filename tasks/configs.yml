@@ -1,0 +1,7 @@
+---
+- name: Set dark background for the vim
+  lineinfile:
+    dest:   /root/.vimrc
+    line: 'set background=dark'
+    state: present
+    create: yes
