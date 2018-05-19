@@ -1,4 +1,6 @@
 Todo:
-*  server-settings away from vars/main.yml
+* Clean repository. This contains at this point full server deployment with fail2ban included.
+* Write documentatation about what the hell this repository is all about
+* Server-settings away from vars/main.yml
 * Updated to latest factorio server release
-* Make deployment a bit simpler (docker based maybe)
+* Make deployment a bit simpler (docker based maybe). This should make redeployment much simpler.
