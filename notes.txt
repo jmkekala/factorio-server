@@ -1,1 +1,4 @@
- server-settings away from vars/main.yml. One settings template per user and one default one for example.
+Todo:
+*  server-settings away from vars/main.yml
+* Updated to latest factorio server release
+* Make deployment a bit simpler (docker based maybe)
